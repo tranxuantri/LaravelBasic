@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CompanyCRUDController;
 use App\Http\Middleware\CheckAdminLogin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 
 /*
@@ -26,7 +27,8 @@ Route::get('/', function () {
 Route::get('login', [AdminLoginController::class, 'getLogin'])->name('getLogin');
 Route::post('login', [AdminLoginController::class, 'postLogin']);
 Route::post('logout',[AdminLoginController::class, 'getLogout'])->name('logout');
-
+Route::get('register', [AdminLoginController::class, 'getRegister'])->name('register');
+Route::post('register', [AdminLoginController::class, 'postRegister']);
 
 Route::resource('companies', CompanyCRUDController::class)->middleware(CheckAdminLogin::class);
 
@@ -53,15 +55,3 @@ Route::prefix('greeting')->as('greeting.')->group(function () {
         return "Hello!";
     });
 });
-
-
-
-// Route::get('admincp/login', ['as' => 'getLogin', 'uses' => 'AdminLoginController@getLogin']);
-// Route::post('admincp/login', ['as' => 'postLogin', 'uses' => 'AdminLoginController@postLogin']);
-// Route::get('admincp/logout', ['as' => 'getLogout', 'uses' => 'AdminLoginController@getLogout']);
-
-// Route::group(['middleware' => 'login', 'prefix' => 'admincp'], function() {
-// Route::get('login', function() {
-// 		return view('login');
-// 	});
-// });

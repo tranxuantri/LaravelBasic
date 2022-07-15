@@ -18,4 +18,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Route::apiResource('companies', 'Api/ApiCompanyController');
+Route::apiResource('companies', App\Http\Controllers\API\ApiCompanyController::class);
+
+Route::post('login', [App\Http\Controllers\API\ApiAdminLoginController::class, 'login']);
+Route::post('logout',[App\Http\Controllers\API\ApiAdminLoginController::class, 'logout']);
+Route::post('register', [App\Http\Controllers\API\ApiAdminLoginController::class, 'register']);

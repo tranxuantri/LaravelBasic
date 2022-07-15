@@ -1,31 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
-class AdminLoginController extends Controller
+class ApiAdminLoginController extends Controller
 {
-
-
-    public function getLogin()
-    {
-        // if (Auth::check()) {
-        //     return redirect('admincp');
-        // } else {
-            return view('login');
-        // }
-    }
 
     /**
      * @param LoginRequest $request
-     * @return RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function postLogin(LoginRequest $request)
+    public function login(LoginRequest $request)
     {
         $login = [
             'email' => $request->email,
@@ -35,27 +25,25 @@ class AdminLoginController extends Controller
         ];
 
         if (Auth::attempt($login)) {
-            return redirect('companies');
+            $token = auth()->user()->createToken('Laravel8PassportAuth')->accessToken->token;
+            return response()->json(['token' => $token], 200);
         } else {
-            return redirect()->back()->with('status', 'Email hoặc Password không chính xác');
+            return response()->json(['error' => 'Unauthorised'], 401);
         }
     }
 
     /**
      * action admincp/logout
-     * @return RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function getLogout()
+    public function logout()
     {
         Auth::logout();
         return redirect()->route('getLogin');
     }
 
-    public function getRegister() {
-        return view('register');
-    }
-
-    public function postRegister(RegisterRequest $request) {
+    public function register(RegisterRequest $request)
+    {
         User::create([
             'name' => trim($request->input('name')),
             'email' => strtolower($request->input('email')),
@@ -63,6 +51,5 @@ class AdminLoginController extends Controller
             'level' => 1,
             'status' => 1
         ]);
-        return redirect()->route('getLogin');
     }
 }
